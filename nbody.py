@@ -15,12 +15,12 @@ from math import sqrt, pi as PI
 
 def combinations(l):
     result = []
+
     for x in range(len(l) - 1):
         ls = l[x + 1 :]
         for y in ls:
             result.append((l[x][0], l[x][1], l[x][2], y[0], y[1], y[2]))
     return result
-
 
 SOLAR_MASS = 4 * PI * PI
 DAYS_PER_YEAR = 365.24
@@ -85,6 +85,7 @@ def advance(dt, n, bodies=SYSTEM, pairs=PAIRS):
             v2[2] += dz * b1m
             v2[1] += dy * b1m
             v2[0] += dx * b1m
+
         for (r, [vx, vy, vz], m) in bodies:
             r[0] += dt * vx
             r[1] += dt * vy
@@ -119,11 +120,19 @@ def main(n, ref="sun"):
     advance(0.01, n)
     report_energy()
 
-
 if __name__ == "__main__":
+
     if len(sys.argv) >= 2:
-        main(int(sys.argv[1]))
+        with open("nbody_python.csv", "w") as fh:
+            fh.write("name of body; position x; position y; position z\n")
+
+            for i in range(int(sys.argv[1])):
+                main(i)
+                for body, (r, v, m) in BODIES.items():
+                    fh.write("{};{};{};{}\n".format(body, r[0], r[1], r[2]))
+
         sys.exit(0)
+
     else:
         print(f"This is {sys.argv[0]}")
         print("Call this program with an integer as program argument")
