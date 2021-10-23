@@ -1,5 +1,4 @@
 /*
-   Halloo 
    Taken from:
    The Computer Language Benchmarks Game
    https://salsa.debian.org/benchmarksgame-team/benchmarksgame/
@@ -15,6 +14,8 @@
 #define _USE_MATH_DEFINES // https://docs.microsoft.com/en-us/cpp/c-runtime-library/math-constants?view=msvc-160
 #include <cmath>
 #include <iostream>
+#include <fstream>
+using namespace std;
 
 
 // these values are constant and not allowed to be changed
@@ -248,12 +249,29 @@ int main(int argc, char **argv) {
         return EXIT_FAILURE;
     } else {
         const unsigned int n = atoi(argv[1]);
+
+        ofstream MyFile("nbody_cpp.csv");
+        MyFile << "name of body; position x; position y; position z\n";
+
         offset_momentum(state);
         std::cout << energy(state) << std::endl;
+
         for (int i = 0; i < n; ++i) {
-            advance(state, 0.01);
+            for (int k = 0; k < n; ++k) {
+                advance(state, 0.01);
+            }
+            std::cout << energy(state) << std::endl;
+
+            for (unsigned int j = 0; j < BODIES_COUNT; ++j) {
+                MyFile << state[j].name << ";" << state[j].position.x << ";" << state[j].position.y << ";"<< state[j].position.z << "\n";
+
+            }
+
         }
-        std::cout << energy(state) << std::endl;
+
         return EXIT_SUCCESS;
+
     }
+
 }
+
