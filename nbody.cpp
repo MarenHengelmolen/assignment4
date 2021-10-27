@@ -15,6 +15,7 @@
 #include <cmath>
 #include <iostream>
 #include <fstream>
+#include <chrono>
 using namespace std;
 
 
@@ -256,18 +257,24 @@ int main(int argc, char **argv) {
         offset_momentum(state);
         std::cout << energy(state) << std::endl;
 
+        // std::chrono::time_point<std::chrono::steady_clock>start, end; //used for measuring time
+        // std::chrono::duration<float>duration; //used for measuring time
+        // start = end = std::chrono::high_resolution_clock::now(); //used for measuring time
+
         for (int i = 0; i < n; ++i) {
-            for (int k = 0; k < n; ++k) {
-                advance(state, 0.01);
-            }
-            std::cout << energy(state) << std::endl;
+            advance(state, 0.01);
+
+            std::cout << energy(state) << std::endl; //When we start measuring the time, we will temporary remove this line by using "//"
 
             for (unsigned int j = 0; j < BODIES_COUNT; ++j) {
-                MyFile << state[j].name << ";" << state[j].position.x << ";" << state[j].position.y << ";"<< state[j].position.z << "\n";
+                MyFile << state[j].name << ";" << state[j].position.x << ";" << state[j].position.y << ";"<< state[j].position.z << "\n"; //When we start measuring the time, we will temporary remove this line by using "//"
 
             }
 
         }
+        // end = std::chrono::high_resolution_clock::now(); //used for measuring time
+        // duration = end - start; //used for measuring time
+        // std::cout << "Time: " << duration.count() << "s\n"; //used for measuring time
 
         return EXIT_SUCCESS;
 
