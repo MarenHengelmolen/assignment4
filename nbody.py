@@ -15,12 +15,12 @@ from math import sqrt, pi as PI
 
 def combinations(l):
     result = []
+
     for x in range(len(l) - 1):
         ls = l[x + 1 :]
         for y in ls:
             result.append((l[x][0], l[x][1], l[x][2], y[0], y[1], y[2]))
     return result
-
 
 SOLAR_MASS = 4 * PI * PI
 DAYS_PER_YEAR = 365.24
@@ -33,7 +33,7 @@ BODIES = {
             1.66007664274403694e-03 * DAYS_PER_YEAR,
             7.69901118419740425e-03 * DAYS_PER_YEAR,
             -6.90460016972063023e-05 * DAYS_PER_YEAR,
-        ],
+            ],
         9.54791938424326609e-04 * SOLAR_MASS,
     ),
     "saturn": (
@@ -42,7 +42,7 @@ BODIES = {
             -2.76742510726862411e-03 * DAYS_PER_YEAR,
             4.99852801234917238e-03 * DAYS_PER_YEAR,
             2.30417297573763929e-05 * DAYS_PER_YEAR,
-        ],
+            ],
         2.85885980666130812e-04 * SOLAR_MASS,
     ),
     "uranus": (
@@ -51,7 +51,7 @@ BODIES = {
             2.96460137564761618e-03 * DAYS_PER_YEAR,
             2.37847173959480950e-03 * DAYS_PER_YEAR,
             -2.96589568540237556e-05 * DAYS_PER_YEAR,
-        ],
+            ],
         4.36624404335156298e-05 * SOLAR_MASS,
     ),
     "neptune": (
@@ -60,7 +60,7 @@ BODIES = {
             2.68067772490389322e-03 * DAYS_PER_YEAR,
             1.62824170038242295e-03 * DAYS_PER_YEAR,
             -9.51592254519715870e-05 * DAYS_PER_YEAR,
-        ],
+            ],
         5.15138902046611451e-05 * SOLAR_MASS,
     ),
 }
@@ -85,6 +85,7 @@ def advance(dt, n, bodies=SYSTEM, pairs=PAIRS):
             v2[2] += dz * b1m
             v2[1] += dy * b1m
             v2[0] += dx * b1m
+
         for (r, [vx, vy, vz], m) in bodies:
             r[0] += dt * vx
             r[1] += dt * vy
@@ -99,7 +100,7 @@ def report_energy(bodies=SYSTEM, pairs=PAIRS, e=0.0):
         e -= (m1 * m2) / ((dx * dx + dy * dy + dz * dz) ** 0.5)
     for (r, [vx, vy, vz], m) in bodies:
         e += m * (vx * vx + vy * vy + vz * vz) / 2.0
-    print("Energy: %.9f" % e)
+    #print("Energy: %.9f" % e)
 
 
 def offset_momentum(ref, bodies=SYSTEM, px=0.0, py=0.0, pz=0.0):
@@ -118,12 +119,19 @@ def main(n, ref="sun"):
     report_energy()
     advance(0.01, n)
     report_energy()
-
-
 if __name__ == "__main__":
+
     if len(sys.argv) >= 2:
-        main(int(sys.argv[1]))
+        with open("nbody_python.csv", "w") as fh:
+            fh.write("name of body; position x; position y; position z\n")
+
+            for i in range(int(sys.argv[1])):
+                main(1)
+                for planet, (r, v, m) in BODIES.items():
+                    fh.write("{};{};{};{}\n".format(planet, r[0], r[1], r[2]))
+
         sys.exit(0)
+
     else:
         print(f"This is {sys.argv[0]}")
         print("Call this program with an integer as program argument")
